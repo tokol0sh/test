@@ -1,121 +1,10 @@
 // test.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <cmath>
-
-class graph {
-public:
-	float xOffset, yOffset, xAxis, yAxis, currentVal, RMSvalue;
-	int chartLength; // length sounds like number of elements? if so then int it is.
-	std::vector<float> dataPoints;
-	sf::Text title;
-
-
-	graph(float x, float y, float w, float h) : xOffset(x), yOffset(y), xAxis(x), yAxis(y), chartLength(100) {
-	}
-
-	void setPosition(float x, float y) {
-		xOffset = x;
-		yOffset = y;
-	}
-
-	float getPosition() {
-
-	}
-
-	void setAxisLength(float xlen, float ylen) {
-		xAxis = xlen;
-		yAxis = ylen;
-	}
-
-	float getAxisLength() {
-
-	}
-
-	void setTitle(sf::Font &font, char text[]) {
-		
-		title.setFont(font);
-		title.setString(text);
-		title.setCharacterSize(24);
-		title.setPosition(xOffset + 25, yOffset - 5 - 24);
-	}
-
-	void drawStats(sf::RenderWindow &window, sf::Font &font) {
-		//Draw some stats below the graph. Input selects which stats to draw (min/max, avg, RMS, current val, etc)
-		sf::Text currentValue;
-		currentValue.setFont(font);
-		currentValue.setCharacterSize(24);
-		currentValue.setPosition(xOffset + 200, yOffset + 200);
-		currentValue.setString(std::to_string(currentVal));
-
-		sf::Text CurrentValue;
-		CurrentValue.setFont(font);
-		CurrentValue.setCharacterSize(24);
-		CurrentValue.setPosition(xOffset, yOffset + 200);
-		CurrentValue.setString("Current Value:");
-
-
-		sf::Text rmstValue;
-		rmstValue.setFont(font);
-		rmstValue.setCharacterSize(24);
-		rmstValue.setPosition(xOffset + 200, yOffset + 200 + 30);
-		RMSvalue = sqrtf((1.0 / xAxis) * RMSvalue);
-		rmstValue.setString(std::to_string(RMSvalue));
-
-		sf::Text RmstValue;
-		RmstValue.setFont(font);
-		RmstValue.setCharacterSize(24);
-		RmstValue.setPosition(xOffset, yOffset + 200 + 30);
-		RmstValue.setString("RMS Value:");
-
-
-		window.draw(currentValue);
-		window.draw(CurrentValue);
-		window.draw(rmstValue);
-		window.draw(RmstValue);
-
-	}
-
-	void draw(sf::RenderWindow &window) {
-		sf::VertexArray chartAxis(sf::LinesStrip, 4);
-		chartAxis[0].position = sf::Vector2f(0 + xOffset, 0 + yOffset);
-		chartAxis[1].position = sf::Vector2f(0 + xOffset, 2 * yAxis + yOffset);
-		chartAxis[2].position = sf::Vector2f(0 + xOffset, yAxis + yOffset);
-		chartAxis[3].position = sf::Vector2f(xAxis + xOffset, yAxis + yOffset);
-		chartAxis[0].color = sf::Color::Green;
-		chartAxis[1].color = sf::Color::Green;
-		chartAxis[2].color = sf::Color::Green;
-		chartAxis[3].color = sf::Color::Green;
-		window.draw(chartAxis);
-		window.draw(title);
-	}
-
-	void addDatapoint(float data) {
-		dataPoints.push_back(data);
-		while (dataPoints.size() > xAxis) {
-			dataPoints.erase(dataPoints.begin());
-		}
-	}
-
-	void update(sf::RenderWindow &window) {
-		sf::VertexArray chart(sf::LinesStrip, 0);
-		chart.clear();
-		for (int i = 0; i < dataPoints.size(); i++) {
-			float x = i;
-			float y = *(dataPoints.begin() + i);
-
-			currentVal = yOffset - y;
-			RMSvalue += pow((yOffset - y), 2.0);
-			chart.append(sf::Vertex(sf::Vector2f(x + xOffset, y + yOffset), sf::Color::Blue));
-		}
-		window.draw(chart);
-	}
-
-};
-
+#include "graph.h"
 
 
 int main()
@@ -134,7 +23,7 @@ int main()
 	sinusoid.setPosition(100, 500);
 	sinusoid.setAxisLength(500, 100);
 	sinusoid.setTitle(font, "this is a title");
-
+	
 
 	
 	// Setup chart with a position and axis sizes
